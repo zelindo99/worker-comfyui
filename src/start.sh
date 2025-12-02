@@ -1,5 +1,30 @@
 #!/usr/bin/env bash
 
+# ─────────────────────────────────────────────────────────────
+# Copy custom_nodes from Network Volume into local ComfyUI
+echo "worker-comfyui: Checking storage paths..."
+echo "worker-comfyui: Copying custom_nodes from Network Volume..."
+
+# Network Volume for Serverless is mounted at /runpod-volume
+if [ -d "/runpod-volume/ComfyUI/custom_nodes" ]; then
+    echo "ls -la /runpod-volume/ComfyUI/custom_nodes"
+    ls -la /runpod-volume/ComfyUI/custom_nodes/
+
+    # Remove any conflicting symlinks/directories
+    rm -rf /comfyui/custom_nodes/custom_nodes
+
+    # Copy all custom nodes from the volume into the ComfyUI install
+    cp -r /runpod-volume/ComfyUI/custom_nodes/* /comfyui/custom_nodes/ 2>/dev/null || \
+        echo "worker-comfyui: No files to copy or copy failed"
+
+    echo "worker-comfyui: Custom nodes copied successfully"
+    echo "ls -la /comfyui/custom_nodes/"
+    ls -la /comfyui/custom_nodes/
+else
+    echo "worker-comfyui: No custom_nodes directory found in Network Volume"
+fi
+# ─────────────────────────────────────────────────────────────
+
 # Use libtcmalloc for better memory management
 TCMALLOC="$(ldconfig -p | grep -Po "libtcmalloc.so.\d" | head -n 1)"
 export LD_PRELOAD="${TCMALLOC}"
