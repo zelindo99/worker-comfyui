@@ -70,9 +70,6 @@ ADD src/extra_model_paths.yaml ./
 # Go back to the root
 WORKDIR /
 
-# Install Python runtime dependencies for the handler
-RUN uv pip install runpod requests websocket-client
-
 # Add application code and scripts
 ADD src/start.sh handler.py test_input.json ./
 RUN chmod +x /start.sh
@@ -87,16 +84,6 @@ ENV PIP_NO_INPUT=1
 # Copy helper script to switch Manager network mode at container start
 COPY scripts/comfy-manager-set-mode.sh /usr/local/bin/comfy-manager-set-mode
 RUN chmod +x /usr/local/bin/comfy-manager-set-mode
-
-# Change working directory to ComfyUI
-WORKDIR /comfyui
-
-# Support for the network volume model layout
-# (This file tells ComfyUI to look under /runpod-volume/ComfyUI/models)
-ADD src/extra_model_paths.yaml ./
-
-# Go back to the root
-WORKDIR /
 
 # Install Python runtime dependencies for the worker handler
 RUN uv pip install runpod requests websocket-client
