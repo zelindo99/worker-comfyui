@@ -11,7 +11,7 @@ if [ -d "/runpod-volume/ComfyUI/custom_nodes" ]; then
     ls -la /runpod-volume/ComfyUI/custom_nodes/
 
     # Remove any conflicting symlinks/directories
-    rm -rf /comfyui/custom_nodes/custom_nodes
+    rm -rf /comfyui/custom_nodes/*
 
     # Copy all custom nodes from the volume into the ComfyUI install
     cp -r /runpod-volume/ComfyUI/custom_nodes/* /comfyui/custom_nodes/ 2>/dev/null || \
